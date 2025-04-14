@@ -1,0 +1,67 @@
+{
+  "name": "geoimport",
+  "version": "0.1.0",
+  "description": "Easily convert your geospatial data to/from GeoJSON for Web-based applications.",
+  "homepage": "https://github.com/mthh/geoimport#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mthh/geoimport.git"
+  },
+  "author": {
+    "name": "Matthieu Viry",
+    "email": "matthieu.viry@cnrs.fr"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mthh/geoimport/issues"
+  },
+  "type": "module",
+  "main": "dist/index.min.js",
+  "module": "dist/index.min.esm.js",
+  "exports": {
+    "import": "./dist/index.min.esm.js",
+    "require": "./dist/index.min.js",
+    "default": "./dist/index.min.js"
+  },
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf dist/ && rollup -c",
+    "watch": "rollup -c -w",
+    "test": "open test/index.html",
+    "lint": "eslint . --ext .js,.ts",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "gdal3.js": "^2.8.1",
+    "jszip": "^3.10.1",
+    "source-map-support": "^0.5.21",
+    "topojson-client": "^3.1.0",
+    "topojson-server": "^3.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/geojson": "^7946.0.16",
+    "@types/topojson-client": "^3.1.5",
+    "@types/topojson-server": "^3.0.4",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.1.1",
+    "prettier": "^3.5.3",
+    "qunit": "^2.24.1",
+    "rollup": "^4.37.0",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.29.0"
+  },
+  "keywords": [
+    "geojson",
+    "gis",
+    "gdal"
+  ]
+}
