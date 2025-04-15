@@ -4,7 +4,8 @@ Easily convert your geospatial data to/from GeoJSON for Web-based applications.
 
 ## Description
 
-This library is a high-level wrapper around gdal3.js, ...
+This library is a high-level wrapper around gdal3.js to provide a simple
+interface for converting geospatial data to and from GeoJSON format.
 
 ## Installation
 
@@ -59,9 +60,15 @@ The package is written in TypeScript and uses the following tools to enforce cod
 
 Please make sure to run these tools (`npm run lint` and `npm run format`) before submitting a pull request.
 
+## Testing
+
+Since this library is mostly targeting browser environments, the test suite uses [QUnit](https://qunitjs.com/) and runs in the browser.
+
+Run the tests by running `npm run test`, this will open your default browser and run the tests.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Note that when using this code from JsDelivr or any other CDN, you must comply with the license of [gdal3.js](https://github.com/bugra9/gdal3.js)
+Note that when using this code from _JsDelivr_ or any other CDN, you must comply with the license of [gdal3.js](https://github.com/bugra9/gdal3.js)
 which is distributed under the [LGPL-2.1 license](https://github.com/bugra9/gdal3.js/blob/master/LICENSE).

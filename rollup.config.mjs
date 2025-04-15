@@ -30,10 +30,19 @@ export default {
     typescript({ typescript: ts }),
     copy({
       targets: [
-        { src: 'node_modules/gdal3.js/dist/package/gdal3WebAssembly.wasm', dest: 'dist/static' },
-        { src: 'node_modules/gdal3.js/dist/package/gdal3WebAssembly.data', dest: 'dist/static' },
-        { src: 'node_modules/gdal3.js/dist/package/gdal3.js', dest: 'dist/static' },
-      ]
+        {
+          src: 'node_modules/gdal3.js/dist/package/gdal3WebAssembly.wasm',
+          dest: 'dist/static',
+        },
+        {
+          src: 'node_modules/gdal3.js/dist/package/gdal3WebAssembly.data',
+          dest: 'dist/static',
+        },
+        {
+          src: 'node_modules/gdal3.js/dist/package/gdal3.js',
+          dest: 'dist/static',
+        },
+      ],
     }),
     terser(),
   ],

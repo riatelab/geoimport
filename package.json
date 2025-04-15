@@ -49,6 +49,7 @@
     "@types/geojson": "^7946.0.16",
     "@types/topojson-client": "^3.1.5",
     "@types/topojson-server": "^3.0.4",
+    "@types/topojson-specification": "^1.0.5",
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
     "prettier": "^3.5.3",

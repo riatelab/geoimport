@@ -14,6 +14,7 @@ export default tseslint.config(
     'coverage/**',
     '*.config.js',
     '*.config.mjs',
+    'test/**/*.js',
   ]),
   {
     languageOptions: {
