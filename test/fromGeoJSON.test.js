@@ -28,7 +28,11 @@ QUnit.module('fromGeoJSON', (hooks) => {
     const res = await geoimport.fromGeoJSON(fc1, 'layer', 'ESRI Shapefile');
 
     assert.equal(res.toString(), '[object Blob]', 'Result is a Blob');
-    assert.equal(res.type, 'application/zip', 'Resulting Blob has correct mime type');
+    assert.equal(
+      res.type,
+      'application/zip',
+      'Resulting Blob has correct mime type',
+    );
     assert.equal(res.size, 1142, 'Resulting Blob has correct size');
   });
 
@@ -37,7 +41,11 @@ QUnit.module('fromGeoJSON', (hooks) => {
     const res = await geoimport.fromGeoJSON(fc1, 'layer', 'GPKG');
 
     assert.equal(res.toString(), '[object Blob]', 'Result is a Blob');
-    assert.equal(res.type, 'application/geopackage+sqlite3', 'Resulting Blob has correct mime type');
+    assert.equal(
+      res.type,
+      'application/geopackage+sqlite3',
+      'Resulting Blob has correct mime type',
+    );
     assert.equal(res.size, 98304, 'Resulting Blob has correct size');
   });
 
@@ -46,7 +54,7 @@ QUnit.module('fromGeoJSON', (hooks) => {
     const res = await geoimport.fromGeoJSON(fc1, 'layer', 'FlatGeobuf');
 
     assert.equal(res.toString(), '[object Blob]', 'Result is a Blob');
-    assert.equal(res.type, '', 'Resulting Blob don\'t have a mime type');
+    assert.equal(res.type, '', "Resulting Blob don't have a mime type");
     assert.equal(res.size, 1344, 'Resulting Blob has correct size');
   });
 });
