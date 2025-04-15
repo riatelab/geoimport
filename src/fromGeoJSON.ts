@@ -3,7 +3,10 @@ import { topology } from 'topojson-server';
 import type { FeatureCollection } from 'geojson';
 
 import { gdal } from './init';
-import { SupportedVectorFormat, supportedVectorFormats } from './supportedFormats';
+import {
+  SupportedVectorFormat,
+  supportedVectorFormats,
+} from './supportedFormats';
 
 /**
  * Convert a GeoJSON FeatureCollection to another vector format.
@@ -38,17 +41,13 @@ const fromGeoJSON = async (
   }
 
   // Store the input GeoJSON in a temporary file
-  const inputFile = new File(
-    [JSON.stringify(layer)],
-    `${layerName}.geojson`,
-    { type: 'application/geo+json' },
-  );
+  const inputFile = new File([JSON.stringify(layer)], `${layerName}.geojson`, {
+    type: 'application/geo+json',
+  });
   // Open the GeoJSON file
   const input = await gdal!.open(inputFile);
   // Set the options for the conversion
-  const options = [
-    '-f', format,
-  ];
+  const options = ['-f', format];
 
   if (format === 'ESRI Shapefile') {
     options.push('-t_srs', crs);
@@ -102,7 +101,7 @@ const fromGeoJSON = async (
     const bytes = await gdal!.getFileBytes(output);
     await gdal!.close(input as never);
     // It looks like there is no standard mime type for FlatGeobuf
-    return new Blob([bytes], { type: '' });
+    return new Blob([bytes], { type: '' }); // Or application/vnd.fgb / application/vnd.flatgeobuf
   }
   if (format === 'Parquet') {
     options.push('-t_srs', crs);
@@ -110,9 +109,9 @@ const fromGeoJSON = async (
     const output = await gdal!.ogr2ogr(input.datasets[0], options);
     const bytes = await gdal!.getFileBytes(output);
     await gdal!.close(input as never);
-    return new Blob([bytes], { type: 'application/vnd.apache.parquet' }); // Or application/vnd.fgb
+    return new Blob([bytes], { type: 'application/vnd.apache.parquet' });
   }
-  return '';
+  throw Error('Unsupported format!'); // This should never happen
 };
 
 export default fromGeoJSON;

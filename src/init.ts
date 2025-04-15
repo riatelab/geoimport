@@ -10,7 +10,9 @@ type InitGdalJsOptions = {
 /**
  * This is a wrapper around initGdalJs function
  */
-const initGeoImport = async (options: InitGdalJsOptions = {}): Promise<void> => {
+const initGeoImport = async (
+  options: InitGdalJsOptions = {},
+): Promise<void> => {
   if (!gdal) {
     const path = options.path || 'static';
     const useWorker = path.includes('cdn')

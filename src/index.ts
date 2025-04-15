@@ -5,11 +5,4 @@ import toGeoJSON from './toGeoJSON';
 import initGeoImport from './init';
 import info from './info';
 
-export {
-  info,
-  initGeoImport,
-  fromGeoJSON,
-  fromTable,
-  toGeoJSON,
-  toTable,
-};
+export { info, initGeoImport, fromGeoJSON, fromTable, toGeoJSON, toTable };
