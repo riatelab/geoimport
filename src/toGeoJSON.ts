@@ -78,7 +78,12 @@ const toGeoJSON = async (
   opts.push('-lco', `WRITE_BBOX=${writeBbox ? 'YES' : 'NO'}`);
   opts.push('-lco', `RFC7946=${rfc7946 ? 'YES' : 'NO'}`);
   if (options.layerName) {
-    opts.push('-sql', `SELECT * FROM "${options.layerName}"`);
+    opts.push(
+      '-nln',
+      `${options.layerName}`,
+      '-sql',
+      `SELECT * FROM "${options.layerName}"`,
+    );
   }
   const output = await gdal!.ogr2ogr(input.datasets[0], opts);
   const bytes = await gdal!.getFileBytes(output);

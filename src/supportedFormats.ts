@@ -4,10 +4,9 @@ export type SupportedVectorFormat =
   | 'KML'
   | 'GML'
   | 'GPKG'
-  | 'Parquet'
   | 'FlatGeobuf';
 
-export type SupportedTabularFormat = 'ODS' | 'XLSX' | 'Parquet';
+export type SupportedTabularFormat = 'ODS' | 'XLSX';
 
 export const supportedVectorFormats = [
   'TopoJSON',
@@ -15,8 +14,7 @@ export const supportedVectorFormats = [
   'KML',
   'GML',
   'GPKG',
-  'GeoParquet',
   'FlatGeobuf',
 ];
 
-export const supportedTabularFormats = ['ODS', 'XLSX', 'Parquet'];
+export const supportedTabularFormats = ['ODS', 'XLSX'];

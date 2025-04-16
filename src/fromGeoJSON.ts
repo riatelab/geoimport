@@ -4,7 +4,7 @@ import type { FeatureCollection } from 'geojson';
 
 import { gdal } from './init';
 import {
-  SupportedVectorFormat,
+  type SupportedVectorFormat,
   supportedVectorFormats,
 } from './supportedFormats';
 
@@ -102,14 +102,6 @@ const fromGeoJSON = async (
     await gdal!.close(input as never);
     // It looks like there is no standard mime type for FlatGeobuf
     return new Blob([bytes], { type: '' }); // Or application/vnd.fgb / application/vnd.flatgeobuf
-  }
-  if (format === 'Parquet') {
-    options.push('-t_srs', crs);
-    // For (Geo)Parquet, we return the binary file, as blob
-    const output = await gdal!.ogr2ogr(input.datasets[0], options);
-    const bytes = await gdal!.getFileBytes(output);
-    await gdal!.close(input as never);
-    return new Blob([bytes], { type: 'application/vnd.apache.parquet' });
   }
   throw Error('Unsupported format!'); // This should never happen
 };
