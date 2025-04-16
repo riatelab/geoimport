@@ -4,22 +4,26 @@ Easily convert your geospatial data to/from GeoJSON for Web-based applications.
 
 ## Description
 
-This library is a high-level wrapper around gdal3.js to provide a simple
+This library is a high-level wrapper around [gdal3.js](https://github.com/bugra9/gdal3.js) to provide a simple
 interface for converting geospatial data to and from GeoJSON format.
 
 ## Installation
 
 ## Overview
 
-This library provides a simple interface to convert geospatial data to and from GeoJSON format. It is built on top of gdal3.js, which is a WASM port of the GDAL library.
+This library provides a simple interface to convert geospatial data to and from GeoJSON format.
+It is built on top of gdal3.js, which is a WASM port of the GDAL library.
 
 It exposes the following functions:
 
-- `toGeoJSON`: Converts a supported vector dataset to GeoJSON format.
-- `fromGeoJSON`: Converts a GeoJSON object to one of the supported vector dataset format.
-- `fromTable`: Converts a table (array of objects) to a supported tabular dataset format.
+- `toGeoJSON`: Converts a supported vector dataset to a GeoJSON FeatureCollection object.
+- `fromGeoJSON`: Converts a GeoJSON FeatureCollection object to one of the supported vector dataset format.
+
 - `toTable`: Converts a supported tabular dataset to a table (array of objects).
-- `info`: Returns information about a vector or a tabular dataset, including the number of layers, layer names, geometry type, column names and the coordinate system.
+- `fromTable`: Converts a table (array of objects) to a supported tabular dataset format.
+
+- `info`: Returns information about a vector or a tabular dataset, including the number of layers,
+  layer names, geometry type, column names and the coordinate reference system.
 
 Supported geospatial formats include:
 
@@ -30,7 +34,6 @@ Supported geospatial formats include:
 - GML
 - KML
 - GPX
-- Geoparquet
 - FlatGeobuf
 
 Supported tabular formats include:
@@ -38,7 +41,6 @@ Supported tabular formats include:
 - CSV/TSV
 - ODS
 - XLSX
-- Parquet
 
 ## Usage
 
