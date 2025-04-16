@@ -3,7 +3,11 @@ QUnit.module('toGeoJSON', (hooks) => {
     await loadLib();
     const topology = JSON.parse(fc1_topojson);
     const res = await geoimport.toGeoJSON(topology);
-    assert.equal(res.type, 'FeatureCollection');
+    assert.equal(
+      res.type,
+      'FeatureCollection',
+      'Result is a FeatureCollection',
+    );
   });
 
   QUnit.test('from TopoJSON with one layer and options', async (assert) => {
@@ -13,22 +17,72 @@ QUnit.module('toGeoJSON', (hooks) => {
       layerName: 'layer',
       writeBbox: true,
     });
-    assert.equal(res.type, 'FeatureCollection');
-    assert.equal(JSON.stringify(res.bbox), JSON.stringify([1, 1, 5, 5]));
+    assert.equal(
+      res.type,
+      'FeatureCollection',
+      'Result is a FeatureCollection',
+    );
+    assert.equal(
+      JSON.stringify(res.bbox),
+      JSON.stringify([1, 1, 5, 5]),
+      'Result has bbox at FeatureCollection level',
+    );
     assert.equal(
       JSON.stringify(res.features[0].bbox),
       JSON.stringify([1, 1, 1, 1]),
+      'Result has bbox at Feature level',
     );
   });
 
-  QUnit.test('from GeoPackage', async (assert) => {
-    await loadLib();
-    const gpkgFile = new File([fc1_geopackage], 'layer.gpkg', {
-      type: fc1_geopackage.type,
-    });
-    const res = await geoimport.toGeoJSON(gpkgFile);
-    assert.equal(res.type, 'FeatureCollection');
-  });
+  QUnit.test(
+    'from GeoPackage with one layer and no options',
+    async (assert) => {
+      await loadLib();
+      const gpkgFile = new File([fc1_geopackage], 'layer.gpkg', {
+        type: fc1_geopackage.type,
+      });
+      const res = await geoimport.toGeoJSON(gpkgFile);
+      assert.equal(
+        res.type,
+        'FeatureCollection',
+        'Result is a FeatureCollection',
+      );
+    },
+  );
+
+  QUnit.test(
+    'from GeoPackage with two layers and a specified layer name',
+    async (assert) => {
+      await loadLib();
+      const gpkgFile = new File([l2_geopackage], 'test.gpkg', {
+        type: l2_geopackage.type,
+      });
+      const res1 = await geoimport.toGeoJSON(gpkgFile, { layerName: 'fc1' });
+      assert.equal(
+        res1.type,
+        'FeatureCollection',
+        'Result is a FeatureCollection',
+      );
+
+      const res2 = await geoimport.toGeoJSON(gpkgFile, { layerName: 'fc2' });
+      assert.equal(
+        res2.type,
+        'FeatureCollection',
+        'Result is a FeatureCollection',
+      );
+    },
+  );
+
+  QUnit.test(
+    'from GeoPackage with two layers and no specified layer name',
+    async (assert) => {
+      await loadLib();
+      const gpkgFile = new File([l2_geopackage], 'test.gpkg', {
+        type: l2_geopackage.type,
+      });
+      await assert.rejects(geoimport.toGeoJSON(gpkgFile), 'An error is thrown');
+    },
+  );
 
   QUnit.test('from KML', async (assert) => {
     await loadLib();
@@ -36,6 +90,15 @@ QUnit.module('toGeoJSON', (hooks) => {
       type: 'application/vnd.google-earth.kml+xml',
     });
     const res = await geoimport.toGeoJSON(kmlFile);
+    assert.equal(res.type, 'FeatureCollection');
+  });
+
+  QUnit.test('from GML', async (assert) => {
+    await loadLib();
+    const gmlFile = new File([fc1_gml], 'layer.gml', {
+      type: 'application/gml+xml',
+    });
+    const res = await geoimport.toGeoJSON(gmlFile);
     assert.equal(res.type, 'FeatureCollection');
   });
 });
