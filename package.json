@@ -35,6 +35,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@json2csv/plainjs": "^7.0.6",
     "gdal3.js": "^2.8.1",
     "jszip": "^3.10.1",
     "source-map-support": "^0.5.21",
