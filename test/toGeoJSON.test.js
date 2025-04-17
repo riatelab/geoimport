@@ -8,6 +8,21 @@ QUnit.module('toGeoJSON', (hooks) => {
       'FeatureCollection',
       'Result is a FeatureCollection',
     );
+    assert.equal(
+      res.features.length,
+      2,
+      'Result has the correct number of features',
+    );
+    assert.equal(
+      JSON.stringify(res.features[0].geometry.coordinates),
+      `[1,1]`,
+      'Feature 1 has the correct coordinates',
+    );
+    assert.equal(
+      JSON.stringify(res.features[1].geometry.coordinates),
+      `[5,5]`,
+      'Feature 2 has the correct coordinates',
+    );
   });
 
   QUnit.test('from TopoJSON with one layer and options', async (assert) => {
@@ -46,6 +61,21 @@ QUnit.module('toGeoJSON', (hooks) => {
         res.type,
         'FeatureCollection',
         'Result is a FeatureCollection',
+      );
+      assert.equal(
+        res.features.length,
+        2,
+        'Result has the correct number of features',
+      );
+      assert.equal(
+        JSON.stringify(res.features[0].geometry.coordinates),
+        `[1,1]`,
+        'Feature 1 has the correct coordinates',
+      );
+      assert.equal(
+        JSON.stringify(res.features[1].geometry.coordinates),
+        `[5,5]`,
+        'Feature 2 has the correct coordinates',
       );
     },
   );
@@ -90,7 +120,54 @@ QUnit.module('toGeoJSON', (hooks) => {
       type: 'application/vnd.google-earth.kml+xml',
     });
     const res = await geoimport.toGeoJSON(kmlFile);
-    assert.equal(res.type, 'FeatureCollection');
+    assert.equal(
+      res.type,
+      'FeatureCollection',
+      'Result is a FeatureCollection',
+    );
+    assert.equal(
+      res.features.length,
+      2,
+      'Result has the correct number of features',
+    );
+    assert.equal(
+      JSON.stringify(res.features[0].geometry.coordinates),
+      `[1,1]`,
+      'Feature 1 has the correct coordinates',
+    );
+    assert.equal(
+      JSON.stringify(res.features[1].geometry.coordinates),
+      `[5,5]`,
+      'Feature 2 has the correct coordinates',
+    );
+  });
+
+  QUnit.test('from GPX', async (assert) => {
+    await loadLib();
+    const gpxFile = new File([fc1_kml], 'layer.gpx', {
+      type: 'application/gpx+xml',
+    });
+    const res = await geoimport.toGeoJSON(gpxFile);
+    assert.equal(
+      res.type,
+      'FeatureCollection',
+      'Result is a FeatureCollection',
+    );
+    assert.equal(
+      res.features.length,
+      2,
+      'Result has the correct number of features',
+    );
+    assert.equal(
+      JSON.stringify(res.features[0].geometry.coordinates),
+      `[1,1]`,
+      'Feature 1 has the correct coordinates',
+    );
+    assert.equal(
+      JSON.stringify(res.features[1].geometry.coordinates),
+      `[5,5]`,
+      'Feature 2 has the correct coordinates',
+    );
   });
 
   QUnit.test('from GML', async (assert) => {
@@ -99,6 +176,25 @@ QUnit.module('toGeoJSON', (hooks) => {
       type: 'application/gml+xml',
     });
     const res = await geoimport.toGeoJSON(gmlFile);
-    assert.equal(res.type, 'FeatureCollection');
+    assert.equal(
+      res.type,
+      'FeatureCollection',
+      'Result is a FeatureCollection',
+    );
+    assert.equal(
+      res.features.length,
+      2,
+      'Result has the correct number of features',
+    );
+    assert.equal(
+      JSON.stringify(res.features[0].geometry.coordinates),
+      `[1,1]`,
+      'Feature 1 has the correct coordinates',
+    );
+    assert.equal(
+      JSON.stringify(res.features[1].geometry.coordinates),
+      `[5,5]`,
+      'Feature 2 has the correct coordinates',
+    );
   });
 });

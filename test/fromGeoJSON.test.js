@@ -49,6 +49,12 @@ QUnit.module('fromGeoJSON', (hooks) => {
     assert.equal(res.size, 98304, 'Resulting Blob has correct size');
   });
 
+  QUnit.test('to GPX', async (assert) => {
+    await loadLib();
+    const res = await geoimport.fromGeoJSON(fc1, 'layer', 'GPX');
+    assert.equal(res, fc1_gpx);
+  });
+
   QUnit.test('to FlatGeobuf', async (assert) => {
     await loadLib();
     const res = await geoimport.fromGeoJSON(fc1, 'layer', 'FlatGeobuf');

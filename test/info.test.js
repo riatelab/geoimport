@@ -106,4 +106,36 @@ QUnit.module('info', (hooks) => {
       'Layer 1 has the expected number of features',
     );
   });
+
+  QUnit.test('of GPX', async (assert) => {
+    await loadLib();
+    const gpxFile = new File([fc1_gpx], 'test.gpx', {
+      type: 'application/gpx+xml',
+    });
+    const res = await geoimport.info(gpxFile);
+
+    assert.equal(
+      res.driverLongName,
+      'GPX',
+      'Result has the expected driver name',
+    );
+    assert.equal(
+      res.driverShortName,
+      'GPX',
+      'Result has the expected driver short name',
+    );
+    // Ogrinfo counts 5 layers for GPX data,
+    // but here, only the "waypoints" layer contains
+    // data
+    assert.equal(
+      res.layers.length,
+      5,
+      'Result has the expected number of layers',
+    );
+    assert.equal(
+      res.layers.find((d) => d.name === 'waypoints').featureCount,
+      2,
+      'Layer "waypoints" has the expected number of features',
+    );
+  });
 });

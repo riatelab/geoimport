@@ -32,6 +32,7 @@ const fc1 = {
 
 const fc1_topojson =
   '{"type":"Topology","objects":{"layer":{"type":"GeometryCollection","geometries":[{"type":"Point","coordinates":[1,1],"properties":{"prop":"foo"}},{"type":"Point","coordinates":[5,5],"properties":{"prop":"bar"}}]}},"arcs":[],"bbox":[1,1,5,5]}';
+
 const fc1_kml = `<?xml version="1.0" encoding="utf-8" ?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
 <Document id="root_doc">
@@ -78,6 +79,18 @@ const fc1_gml = `<?xml version="1.0" encoding="utf-8" ?>
     </ogr:layer>
   </ogr:featureMember>
 </ogr:FeatureCollection>
+`;
+
+const fc1_gpx = `<?xml version="1.0"?>
+<gpx version="1.1" creator="GDAL 3.8.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<metadata>
+<bounds minlat="1.000000000000000" minlon="1.000000000000000" maxlat="5.000000000000000" maxlon="5.000000000000000"/>                                           
+</metadata>
+<wpt lat="1.0" lon="1.0">
+</wpt>
+<wpt lat="5.0" lon="5.0">
+</wpt>
+</gpx>
 `;
 
 const blobFromString = (str, mimeType) => {
