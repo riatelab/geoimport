@@ -44,11 +44,40 @@ Supported tabular formats include:
 
 ## Usage
 
-```
+Usage may vary slightly depending on the context in which you use the library:
+
+```js
 import * as geoimport from 'geoimport';
 
 geoimport.init();
+
+const result = geoimport.fromGeoJSON(geojson);
 ```
+
+```js
+import { init, fromGeoJSON } from 'geoimport';
+
+init({
+  path: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.8.1/dist/package/',
+});
+
+const result = fromGeoJSON(geojson);
+```
+
+See also this [introduction Notebook on Observable](https://observablehq.com/@mthh/hello-geoimport).
+
+Note that this library depends on [gdal3.js]() which is relatively heavy.
+
+If you only need the conversion from/to GeoJSON and:
+
+- GPX/KML, see [mapbox/togeojson](https://github.com/mapbox/togeojson),
+- Shapefile with CRS support, see [calvinmetcalf/shapefile-js](https://github.com/calvinmetcalf/shapefile-js),
+- GML, see [SKalt/geojson-to-gml-3.2.1](https://github.com/SKalt/geojson-to-gml-3.2.1),
+- FlatGeobuf, see [flatgeobuf/flatgeobuf](https://github.com/flatgeobuf/flatgeobuf),
+- TopoJSON, see [topojson/topojson-client](https://github.com/topojson/topojson-client/) and [topojson/topojson-server](https://github.com/topojson/topojson-server/),
+- GeoPackage, see [ngageoint/geopackage-js](https://github.com/ngageoint/geopackage-js).
+
+However, if you need to convert to/from several of these formats (plus XLSX and ODS), this library is for you!
 
 ## Contributing
 
@@ -60,13 +89,14 @@ The package is written in TypeScript and uses the following tools to enforce cod
 - [ESLint](https://eslint.org/) - Linter
 - [Prettier](https://prettier.io/) - Code formatter
 
-Please make sure to run these tools (`npm run lint` and `npm run format`) before submitting a pull request.
+Please make sure to run these tools (`npm run format` and `npm run lint`) before submitting a pull request.
 
 ## Testing
 
 Since this library is mostly targeting browser environments, the test suite uses [QUnit](https://qunitjs.com/) and runs in the browser.
 
-Run the tests by running `npm run test`, this will open your default browser and run the tests.
+Run the tests by running `npm run test`, this will open your default browser and run the tests (and since the tests are executed on the built file,
+don't forget to, run `npm run build` after making any change in the code and before running the tests).
 
 ## License
 
