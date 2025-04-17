@@ -16,8 +16,9 @@ import {
  * @param {SupportedVectorFormat} format - The format to convert to.
  * @param {string} [crs="EPSG:4326"] - The coordinate reference system to use for the output file
  * (can be a EPSG code, a PROJ string or a WKT string).
- * @returns {Promise<string | Blob>}
- * @throws {Error} - If the format is not supported or if there is an error creating resulting file.
+ * @returns {Promise<string | Blob>} The resulting layer, either as a String for textual formats
+ * (TopoJSON, KML, GML and GPX) or as a Blob for binary formats (ESRI Shapefile, GPKG, FlatGeobuf).
+ * @throws {Error} - If the format is not supported or if there is an error while creating resulting file.
  */
 const fromGeoJSON = async (
   layer: FeatureCollection,
@@ -29,8 +30,11 @@ const fromGeoJSON = async (
   if (!supportedVectorFormats.includes(format)) {
     throw new Error(`Unsupported format! ${format}`);
   }
-  if (format === 'KML' && crs !== 'EPSG:4326') {
-    throw new Error('KML format only supports EPSG:4326 CRS');
+  if (
+    (format === 'KML' || format === 'GPX' || format === 'TopoJSON')
+    && crs !== 'EPSG:4326'
+  ) {
+    throw new Error(`${format} format only supports EPSG:4326 CRS`);
   }
 
   // If the format is TopoJSON, we will use the topology function,
@@ -81,22 +85,17 @@ const fromGeoJSON = async (
     await gdal!.close(input as never);
     return new TextDecoder().decode(bytes);
   }
-  if (format === 'GPKG') {
+  if (format === 'GPKG' || format === 'FlatGeobuf') {
     options.push('-t_srs', crs);
-    // For GPKG, we return the binary file, as blob
+    // For GPKG and FlatGeobuf, we return the binary file, as blob
     const output = await gdal!.ogr2ogr(input.datasets[0], options);
     const bytes = await gdal!.getFileBytes(output);
     await gdal!.close(input as never);
-    return new Blob([bytes], { type: 'application/geopackage+sqlite3' });
-  }
-  if (format === 'FlatGeobuf') {
-    options.push('-t_srs', crs);
-    // For FlatGeobuf, we return the binary file, as blob
-    const output = await gdal!.ogr2ogr(input.datasets[0], options);
-    const bytes = await gdal!.getFileBytes(output);
-    await gdal!.close(input as never);
-    // It looks like there is no standard mime type for FlatGeobuf
-    return new Blob([bytes], { type: '' }); // Or application/vnd.fgb / application/vnd.flatgeobuf
+    // It look likes there is no standard mimeType for FlatGeobuf
+    // but maybe we should use
+    // application/vnd.fgb or application/vnd.flatgeobuf
+    const mimeType = format === 'GPKG' ? 'application/geopackage+sqlite3' : '';
+    return new Blob([bytes], { type: mimeType });
   }
   throw Error('Unsupported format!'); // This should never happen
 };
