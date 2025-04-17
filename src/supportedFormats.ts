@@ -4,6 +4,7 @@ export type SupportedVectorFormat =
   | 'KML'
   | 'GML'
   | 'GPKG'
+  | 'GPX'
   | 'FlatGeobuf';
 
 export type SupportedTabularFormat = 'ODS' | 'XLSX';
@@ -14,6 +15,7 @@ export const supportedVectorFormats = [
   'KML',
   'GML',
   'GPKG',
+  'GPX',
   'FlatGeobuf',
 ];
 

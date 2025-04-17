@@ -71,16 +71,11 @@ const fromGeoJSON = async (
     // Generate the zip file (as a Blob)
     return zip.generateAsync({ type: 'blob' });
   }
-  if (format === 'GML') {
-    options.push('-t_srs', crs);
-    // For KML and GML, we only return a text file
-    const output = await gdal!.ogr2ogr(input.datasets[0], options);
-    const bytes = await gdal!.getFileBytes(output);
-    await gdal!.close(input as never);
-    return new TextDecoder().decode(bytes);
-  }
-  if (format === 'KML') {
-    // For KML and GML, we only return a text file
+  if (format === 'GML' || format === 'KML' || format === 'GPX') {
+    if (format === 'GML') {
+      options.push('-t_srs', crs);
+    }
+    // For KML, GML and GPX, we only return a text file
     const output = await gdal!.ogr2ogr(input.datasets[0], options);
     const bytes = await gdal!.getFileBytes(output);
     await gdal!.close(input as never);
