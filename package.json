@@ -2,10 +2,10 @@
   "name": "geoimport",
   "version": "0.1.0",
   "description": "Easily convert your geospatial data to/from GeoJSON for Web-based applications.",
-  "homepage": "https://github.com/mthh/geoimport#readme",
+  "homepage": "https://github.com/riatelab/geoimport#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mthh/geoimport.git"
+    "url": "git+https://github.com/riatelab/geoimport.git"
   },
   "author": {
     "name": "Matthieu Viry",
@@ -13,7 +13,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mthh/geoimport/issues"
+    "url": "https://github.com/riatelab/geoimport/issues"
   },
   "type": "module",
   "main": "dist/index.min.js",
