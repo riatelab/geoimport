@@ -7,6 +7,9 @@ Easily convert your geospatial data to/from GeoJSON for Web-based applications.
 This library is a high-level wrapper around [gdal3.js](https://github.com/bugra9/gdal3.js) to provide a simple
 interface for converting geospatial data to and from GeoJSON format.
 
+It is notably used in the [Magrit](https://github.com/riatelab/magrit) Web-application to handle
+the import/export of various file formats.
+
 ## Installation
 
 ## Overview
@@ -66,9 +69,8 @@ const result = fromGeoJSON(geojson);
 
 See also this [introduction Notebook on Observable](https://observablehq.com/@mthh/hello-geoimport).
 
-Note that this library depends on [gdal3.js]() which is relatively heavy.
-
-If you only need the conversion from/to GeoJSON and:
+Note that this library depends on [gdal3.js](https://github.com/bugra9/gdal3.js) which is relatively heavy,
+so maybe `geoimport` is not a good fit for you. Indeed, if you only need the conversion from/to GeoJSON and:
 
 - GPX/KML, see [mapbox/togeojson](https://github.com/mapbox/togeojson),
 - Shapefile with CRS support, see [calvinmetcalf/shapefile-js](https://github.com/calvinmetcalf/shapefile-js),
