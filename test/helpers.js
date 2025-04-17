@@ -1,5 +1,5 @@
 const loadLib = async () => {
-  await geoimport.initGeoImport({
+  await geoimport.init({
     path: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.8.1/dist/package/',
   });
 };
