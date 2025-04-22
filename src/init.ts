@@ -3,7 +3,9 @@ import initGdalJs from 'gdal3.js';
 export let gdal: Gdal | null = null;
 
 type InitGdalJsOptions = {
-  path?: string;
+  // The path to the directory containing Gdal3.js files
+  gdalPath?: string;
+  // Whether to run gdal in a web worker
   useWorker?: boolean;
 };
 
@@ -12,7 +14,7 @@ type InitGdalJsOptions = {
  */
 const init = async (options: InitGdalJsOptions = {}): Promise<void> => {
   if (!gdal) {
-    const path = options.path || 'static';
+    const path = options.gdalPath || 'static';
     const useWorker = path.includes('cdn')
       ? false
       : typeof options.useWorker === 'boolean'
