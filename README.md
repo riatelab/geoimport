@@ -54,17 +54,52 @@ import * as geoimport from 'geoimport';
 
 geoimport.init();
 
-const result = geoimport.fromGeoJSON(geojson);
+// A geojson feature collection
+const geojson = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [1, 1] },
+      properties: { foo: 42 },
+    },
+  ],
+};
+// Convert to shapefile, the result is a zip archive containing all the layers, as a Blob
+const resultShp = geoimport.fromGeoJSON(geojson, 'myLayer', 'ESRI Shapefile');
+// Or convert to GeoPackage, using Robinson CRS,
+// the result is a the geopackage file, as a Blob
+const resultGpkg = geoimport.fromGeoJSON(
+  geojson,
+  'myLayer',
+  'GPKG',
+  'ESRI:54030',
+);
+
+// Convert back to geojson
+const resGeojson = geoimport.toGeoJSON(resultGpkg, { layerName: 'myLayer' });
 ```
 
 ```js
 import { init, fromGeoJSON } from 'geoimport';
 
 init({
-  path: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.8.1/dist/package/',
+  gdalPath: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.8.1/dist/package/',
 });
 
-const result = fromGeoJSON(geojson);
+// A geojson feature collection
+const geojson = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [1, 1] },
+      properties: { foo: 42 },
+    },
+  ],
+};
+// Convert to KML, the result is a String
+const resultShp = fromGeoJSON(geojson, 'myLayer', 'KML');
 ```
 
 See also this [introduction Notebook on Observable](https://observablehq.com/@mthh/hello-geoimport).
