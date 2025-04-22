@@ -47,7 +47,8 @@ Supported tabular formats include:
 
 ## Usage
 
-Usage may vary slightly depending on the context in which you use the library:
+Importing and initializing `geoimport` may vary slightly depending on the context in which
+you use the library:
 
 ```js
 import * as geoimport from 'geoimport';
@@ -123,10 +124,13 @@ We welcome all contributions, including bug fixes, new features, and documentati
 
 The package is written in TypeScript and uses the following tools to enforce code quality and a consistent style:
 
-- [ESLint](https://eslint.org/) - Linter
 - [Prettier](https://prettier.io/) - Code formatter
+- [ESLint](https://eslint.org/) - Linter
 
 Please make sure to run these tools (`npm run format` and `npm run lint`) before submitting a pull request.
+
+Also, note that this project uses [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
+and [semantic versioning](https://semver.org/).
 
 ## Testing
 
