@@ -80,6 +80,8 @@ const fromGeoJSON = async (
   if (format === 'GML' || format === 'KML' || format === 'GPX') {
     if (format === 'GML') {
       options.push('-t_srs', crs);
+    } else if (format === 'GPX') {
+      options.push('-dsco', 'GPX_USE_EXTENSIONS=YES');
     }
     // For KML, GML and GPX, we only return a text file
     const output = await gdal!.ogr2ogr(input.datasets[0], options);

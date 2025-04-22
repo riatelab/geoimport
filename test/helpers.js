@@ -82,13 +82,19 @@ const fc1_gml = `<?xml version="1.0" encoding="utf-8" ?>
 `;
 
 const fc1_gpx = `<?xml version="1.0"?>
-<gpx version="1.1" creator="GDAL 3.8.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<gpx version="1.1" creator="GDAL 3.8.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogr="http://osgeo.org/gdal" xmlns="http://www.topografix.com/GPX/1/1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
 <metadata>
 <bounds minlat="1.000000000000000" minlon="1.000000000000000" maxlat="5.000000000000000" maxlon="5.000000000000000"/>                                           
 </metadata>
 <wpt lat="1.0" lon="1.0">
+  <extensions>
+    <ogr:prop>foo</ogr:prop>
+  </extensions>
 </wpt>
 <wpt lat="5.0" lon="5.0">
+  <extensions>
+    <ogr:prop>bar</ogr:prop>
+  </extensions>
 </wpt>
 </gpx>
 `;
