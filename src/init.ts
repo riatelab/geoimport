@@ -2,6 +2,9 @@ import initGdalJs from 'gdal3.js';
 
 export let gdal: Gdal | null = null;
 
+/**
+ * Options for the `init` function.
+ */
 type InitGdalJsOptions = {
   // The path to the directory containing Gdal3.js files
   gdalPath?: string;

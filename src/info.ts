@@ -2,9 +2,67 @@ import { gdal } from './init';
 import { Topology } from 'topojson-specification';
 import { FeatureCollection } from 'geojson';
 
+type FieldObject = {
+  name: string;
+  nullable: boolean;
+  type:
+    | 'Integer'
+    | 'Integer64'
+    | 'Real'
+    | 'String'
+    | 'Date'
+    | 'Time'
+    | 'DateTime'
+    | 'Binary'
+    | 'IntegerList'
+    | 'Integer64List'
+    | 'RealList'
+    | 'StringList';
+  uniqueConstraint: boolean;
+  width?: number;
+  precision?: number;
+};
+
+type GeometryFieldObject = {
+  extent?: [number, number, number, number];
+  coordinateSystem: object;
+  name: string;
+  nullable: boolean;
+  type: string;
+};
+
+type LayerObject = {
+  featureCount: number;
+  fields: FieldObject[];
+  geometryFields: GeometryFieldObject[];
+  metadata: object;
+  name: string;
+};
+
+type InfoResult = {
+  description: string;
+  domains: object;
+  driverLongName: string;
+  driverShortName: string;
+  layers: LayerObject[];
+  metadata: object;
+  relationships: object;
+};
+
+/**
+ * Get information about a vector dataset amongst the supported formats.
+ *
+ * This is a wrapper around 'ogrinfo'.
+ *
+ * @param {Topology | FeatureCollection | File | FileList | File[]} fileOrFiles - The input
+ * dataset.
+ * @retuns {Promise<InfoResult>}
+ * @throws {Error} - If the format is not supported or if there is an error while
+ * getting info about the input dataset.
+ */
 const info = async (
   fileOrFiles: Topology | FeatureCollection | File | FileList | File[],
-): Promise<object> => {
+): Promise<InfoResult> => {
   if (
     'type' in fileOrFiles
     && (fileOrFiles.type === 'Topology'
@@ -21,7 +79,7 @@ const info = async (
   const input = await gdal!.open(fileOrFiles as File | FileList);
   const result = await gdal!.ogrinfo(input.datasets[0], options);
   await gdal!.close(input as never);
-  return result;
+  return result as InfoResult;
 };
 
 export default info;

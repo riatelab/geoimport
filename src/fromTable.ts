@@ -5,6 +5,17 @@ import {
   supportedTabularFormats,
 } from './supportedFormats';
 
+/**
+ * Convert a table (described by an array of objects) to a binary tabular file
+ * (ODS or XLSX).
+ *
+ * This is a wrapper around 'ogr2ogr'.
+ *
+ * @param {Record<string, unknown>[]} table - The data to convert.
+ * @param {SupportedTabularFormat} format - The format to convert to.
+ * @returns {Promise<Blob>} - The resulting file, as a Blob.
+ * @throws {Error} - If the format is not supported or if there is an error while creating resulting file.
+ */
 const fromTable = async (
   table: Record<string, unknown>[],
   format: SupportedTabularFormat,

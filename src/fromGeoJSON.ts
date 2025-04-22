@@ -11,6 +11,8 @@ import {
 /**
  * Convert a GeoJSON FeatureCollection to another vector format.
  *
+ * This is a wrapper around 'ogr2ogr'.
+ *
  * @param {FeatureCollection} layer - The GeoJSON FeatureCollection to convert.
  * @param {string} layerName - The name of the layer to create.
  * @param {SupportedVectorFormat} format - The format to convert to.

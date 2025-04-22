@@ -4,6 +4,9 @@ import type { Topology } from 'topojson-specification';
 
 import { gdal } from './init';
 
+/**
+ * Options for the `toGeoJSON` function.
+ */
 type ToGeoJSONOptions = {
   // The name of the layer to extract (only for formats that can contain multiple layers
   // such as GeoPackage or TopoJSON). If the input dataset contains multiples layers
@@ -21,6 +24,19 @@ type ToGeoJSONOptions = {
   writeNonFiniteValues?: boolean;
 };
 
+/**
+ * Convert a geospatial vector dataset to a GeoJSON FeatureCollection.
+ *
+ * This is a wrapper around 'ogr2ogr'.
+ *
+ * @param {Topology | File | FileList | File[]} fileOrFiles - The dataset to convert
+ * to GeoJSON (either a Topology, a File or an array of Files for ESRI Shapefiles for example).
+ * @param {ToGeoJSONOptions} [options={}] - The options (such as the name of the layer to convert
+ * for formats that can contain multiple layers, whether to write the BBox, etc.).
+ * @return {Promise<FeatureCollection>} - The resulting GeoJSON FeatureCollection.
+ * @throws {Error} - If the format is not supported or if there is an error while
+ * creating resulting file.
+ */
 const toGeoJSON = async (
   fileOrFiles: Topology | File | FileList | File[],
   options: ToGeoJSONOptions = {},

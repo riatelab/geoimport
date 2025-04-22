@@ -1,12 +1,31 @@
 import toGeoJSON from './toGeoJSON';
 
+/**
+ * Options for the `toTable` function.
+ */
 type ToTableOptions = {
   // The name of the table to extract (mandatory if the dataset contains
   // multiple sheets).
   tableName?: string;
 };
 
-const toTable = async (file: File, options: ToTableOptions = {}) => {
+/**
+ * Convert an ODS or an XLSX file to the corresponding JavaScript table
+ * (array of objects).
+ *
+ * This is a wrapper around 'ogr2ogr'.
+ *
+ * @param {File} file - The file to convert.
+ * @param {ToTableOptions} [options={}] - The options (such as the name of the sheet
+ * to extract when the file contains multiple sheets).
+ * @return {Promise<Record<string, unknown>[]>} - The resulting table as an array of objects.
+ * @throws {Error} - If the format is not supported or if there is an error while
+ * creating resulting file.
+ */
+const toTable = async (
+  file: File,
+  options: ToTableOptions = {},
+): Promise<Record<string, unknown>[]> => {
   const opts = options.tableName ? { layerName: options.tableName } : {};
   const layer = await toGeoJSON(file, opts);
 
@@ -63,7 +82,7 @@ const toTable = async (file: File, options: ToTableOptions = {}) => {
   }
 
   // Return the cleaned dataset
-  return rows.slice(0, lastDataRowIndex + 1);
+  return rows.slice(0, lastDataRowIndex + 1) as Record<string, unknown>[];
 };
 
 export default toTable;
