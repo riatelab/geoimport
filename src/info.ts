@@ -1,6 +1,7 @@
-import { gdal } from './init';
 import { Topology } from 'topojson-specification';
 import { FeatureCollection } from 'geojson';
+import cleanFolder from './cleanFolder';
+import { gdal } from './init';
 
 type FieldObject = {
   name: string;
@@ -69,7 +70,7 @@ const info = async (
       || fileOrFiles.type === 'FeatureCollection')
   ) {
     // The input may be a TopoJSON Topology or a GeoJSON FeatureCollection
-    fileOrFiles = new File([JSON.stringify(fileOrFiles)], 'file.topojson', {
+    fileOrFiles = new File([JSON.stringify(fileOrFiles)], 'file.json', {
       type: 'application/json',
     });
   } else if (!('arrayBuffer' in fileOrFiles) && !Array.isArray(fileOrFiles)) {
@@ -79,6 +80,7 @@ const info = async (
   const input = await gdal!.open(fileOrFiles as File | FileList);
   const result = await gdal!.ogrinfo(input.datasets[0], options);
   await gdal!.close(input as never);
+  cleanFolder('/input');
   return result as InfoResult;
 };
 

@@ -1,4 +1,5 @@
 import toGeoJSON from './toGeoJSON';
+import cleanFolder from './cleanFolder';
 
 /**
  * Options for the `toTable` function.
@@ -28,6 +29,8 @@ const toTable = async (
 ): Promise<Record<string, unknown>[]> => {
   const opts = options.tableName ? { layerName: options.tableName } : {};
   const layer = await toGeoJSON(file, opts);
+
+  cleanFolder(['/input', '/output']);
 
   if (!layer || !('features' in layer) || layer.features.length < 1) {
     throw new Error('An error occurred or the table is empty');

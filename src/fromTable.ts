@@ -1,4 +1,5 @@
 import { Parser } from '@json2csv/plainjs';
+import cleanFolder from './cleanFolder';
 import { gdal } from './init';
 import {
   type SupportedTabularFormat,
@@ -42,6 +43,7 @@ const fromTable = async (
       : format === 'XLSX'
         ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         : '';
+  cleanFolder(['/input', '/output']);
   return new Blob([bytes], { type: mimeType });
 };
 

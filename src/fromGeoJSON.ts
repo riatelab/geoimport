@@ -2,6 +2,7 @@ import JSZip from 'jszip';
 import { topology } from 'topojson-server';
 import type { FeatureCollection } from 'geojson';
 
+import cleanFolder from './cleanFolder';
 import { gdal } from './init';
 import {
   type SupportedVectorFormat,
@@ -74,6 +75,7 @@ const fromGeoJSON = async (
       zip.file(fileName, blob, { binary: true });
     }
     await gdal!.close(input as never);
+    cleanFolder(['/input', '/output']);
     // Generate the zip file (as a Blob)
     return zip.generateAsync({ type: 'blob' });
   }
@@ -87,6 +89,7 @@ const fromGeoJSON = async (
     const output = await gdal!.ogr2ogr(input.datasets[0], options);
     const bytes = await gdal!.getFileBytes(output);
     await gdal!.close(input as never);
+    cleanFolder(['/input', '/output']);
     return new TextDecoder().decode(bytes);
   }
   if (format === 'GPKG' || format === 'FlatGeobuf') {
@@ -95,6 +98,7 @@ const fromGeoJSON = async (
     const output = await gdal!.ogr2ogr(input.datasets[0], options);
     const bytes = await gdal!.getFileBytes(output);
     await gdal!.close(input as never);
+    cleanFolder(['/input', '/output']);
     // It look likes there is no standard mimeType for FlatGeobuf
     // but maybe we should use
     // application/vnd.fgb or application/vnd.flatgeobuf

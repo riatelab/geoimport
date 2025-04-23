@@ -2,6 +2,7 @@ import { feature } from 'topojson-client';
 import type { FeatureCollection } from 'geojson';
 import type { Topology } from 'topojson-specification';
 
+import cleanFolder from './cleanFolder';
 import { gdal } from './init';
 
 /**
@@ -104,6 +105,7 @@ const toGeoJSON = async (
   const output = await gdal!.ogr2ogr(input.datasets[0], opts);
   const bytes = await gdal!.getFileBytes(output);
   await gdal!.close(input as never);
+  cleanFolder(['/input', '/output']);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const obj = JSON.parse(new TextDecoder().decode(bytes));
   if (
