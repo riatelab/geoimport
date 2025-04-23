@@ -155,5 +155,5 @@ don't forget to, run `npm run build` after making any change in the code and bef
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Note that when using this code from _JsDelivr_ or any other CDN, you must comply with the license of [gdal3.js](https://github.com/bugra9/gdal3.js)
-which is distributed under the [LGPL-2.1 license](https://github.com/bugra9/gdal3.js/blob/master/LICENSE).
+Note that this code imports [gdal3.js](https://github.com/bugra9/gdal3.js) so you must comply with the license of [gdal3.js](https://github.com/bugra9/gdal3.js/blob/master/LICENSE)
+which is distributed under the [LGPL-2.1 license](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
