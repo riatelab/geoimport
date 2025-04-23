@@ -75,7 +75,7 @@ const toGeoJSON = async (
     const lName = names.length === 1 ? names[0] : (options.layerName as string);
     const obj = feature(topo, topo.objects[lName]);
     // If none of the special options (writeNonFiniteValues=False, rfc7946=true, writeBbox=true)
-    // is set, we can return the GeoJSON as it, otherwise, we will pass it through GDAL
+    // is set, we can return the GeoJSON as it, otherwise, we pass it through GDAL
     // to write it in the expected format
     if (writeNonFiniteValues && !rfc7946 && !writeBbox) {
       return obj as FeatureCollection;

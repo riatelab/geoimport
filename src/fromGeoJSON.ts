@@ -19,8 +19,8 @@ import {
  * @param {SupportedVectorFormat} format - The format to convert to.
  * @param {string} [crs="EPSG:4326"] - The coordinate reference system to use for the output file
  * (can be a EPSG code, a PROJ string or a WKT string).
- * @returns {Promise<string | Blob>} The resulting layer, either as a String for textual formats
- * (TopoJSON, KML, GML and GPX) or as a Blob for binary formats (ESRI Shapefile, GPKG, FlatGeobuf).
+ * @returns {Promise<string | File>} The resulting layer, either as a String for textual formats
+ * (TopoJSON, KML, GML and GPX) or as a File for binary formats (ESRI Shapefile, GPKG, FlatGeobuf).
  * @throws {Error} - If the format is not supported or if there is an error while creating resulting file.
  */
 const fromGeoJSON = async (
@@ -28,7 +28,7 @@ const fromGeoJSON = async (
   layerName: string,
   format: SupportedVectorFormat,
   crs: string = 'EPSG:4326',
-): Promise<string | Blob> => {
+): Promise<string | File> => {
   // Check the various parameters
   if (!supportedVectorFormats.includes(format)) {
     throw new Error(`Unsupported format! ${format}`);
@@ -40,7 +40,7 @@ const fromGeoJSON = async (
     throw new Error(`${format} format only supports EPSG:4326 CRS`);
   }
 
-  // If the format is TopoJSON, we will use the topology function,
+  // If the format is TopoJSON, we use the topology function,
   // and so we don't need to use gdal
   if (format === 'TopoJSON') {
     const topo = topology({ [layerName]: layer });
@@ -77,7 +77,8 @@ const fromGeoJSON = async (
     await gdal!.close(input as never);
     cleanFolder(['/input', '/output']);
     // Generate the zip file (as a Blob)
-    return zip.generateAsync({ type: 'blob' });
+    const blob = await zip.generateAsync({ type: 'blob' });
+    return new File([blob], `${layerName}.zip`, { type: 'application/zip' });
   }
   if (format === 'GML' || format === 'KML' || format === 'GPX') {
     if (format === 'GML') {
@@ -103,7 +104,9 @@ const fromGeoJSON = async (
     // but maybe we should use
     // application/vnd.fgb or application/vnd.flatgeobuf
     const mimeType = format === 'GPKG' ? 'application/geopackage+sqlite3' : '';
-    return new Blob([bytes], { type: mimeType });
+    const extension = format === 'GPKG' ? 'gpkg' : 'fgb';
+    const blob = new Blob([bytes], { type: mimeType });
+    return new File([blob], `${layerName}.${extension}`, { type: blob.type });
   }
   throw Error('Unsupported format!'); // This should never happen
 };
