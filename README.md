@@ -100,10 +100,10 @@ const geojson = {
     },
   ],
 };
-// Convert to shapefile, the result is a zip archive containing all the layers, as a Blob
+// Convert to shapefile, the result is a zip archive containing all the layers, as a File
 const resultShp = geoimport.fromGeoJSON(geojson, 'myLayer', 'ESRI Shapefile');
 // Or convert to GeoPackage, using Robinson CRS,
-// the result is a the geopackage file, as a Blob
+// the result is a the geopackage file, as a File
 const resultGpkg = geoimport.fromGeoJSON(
   geojson,
   'myLayer',
@@ -155,5 +155,6 @@ don't forget to, run `npm run build` after making any change in the code and bef
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Note that this code imports [gdal3.js](https://github.com/bugra9/gdal3.js) so you must comply with the license of [gdal3.js](https://github.com/bugra9/gdal3.js/blob/master/LICENSE)
+Note that this code imports [gdal3.js](https://github.com/bugra9/gdal3.js) so you must comply with the license of
+[gdal3.js](https://github.com/bugra9/gdal3.js/blob/master/LICENSE)
 which is distributed under the [LGPL-2.1 license](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html).
