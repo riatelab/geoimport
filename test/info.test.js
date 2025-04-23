@@ -138,4 +138,40 @@ QUnit.module('info', (hooks) => {
       'Layer "waypoints" has the expected number of features',
     );
   });
+
+  QUnit.test('info of zipped Shapefile', async (assert) => {
+    await loadLib();
+    // We first create zipped Shapefile from GeoJSON
+    const zippedShapefile = await geoimport.fromGeoJSON(
+      fc1,
+      'layer',
+      'ESRI Shapefile',
+    );
+    const blob = new File([zippedShapefile], 'layer.zip', {
+      type: 'application/zip',
+    });
+    // We use the zipped Shapefile to test the info function
+    const res = await geoimport.info(blob);
+
+    assert.equal(
+      res.driverLongName,
+      'ESRI Shapefile',
+      'Result has the expected driver name',
+    );
+    assert.equal(
+      res.driverShortName,
+      'ESRI Shapefile',
+      'Result has the expected driver short name',
+    );
+    assert.equal(
+      res.layers.length,
+      1,
+      'Result has the expected number of layers',
+    );
+    assert.equal(
+      res.layers[0].featureCount,
+      2,
+      'Layer 1 has the expected number of features',
+    );
+  });
 });

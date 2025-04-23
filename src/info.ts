@@ -2,6 +2,7 @@ import { Topology } from 'topojson-specification';
 import { FeatureCollection } from 'geojson';
 import cleanFolder from './cleanFolder';
 import { gdal } from './init';
+import extractZipContent from './zip';
 
 type FieldObject = {
   name: string;
@@ -75,6 +76,14 @@ const info = async (
     });
   } else if (!('arrayBuffer' in fileOrFiles) && !Array.isArray(fileOrFiles)) {
     throw new Error('Unexpected input dataset');
+  }
+  // Handle zipped shapefiles by unpacking them
+  if (
+    fileOrFiles instanceof File
+    && (fileOrFiles.type === 'application/zip'
+      || fileOrFiles.name.toLowerCase().endsWith('.zip'))
+  ) {
+    fileOrFiles = await extractZipContent(fileOrFiles);
   }
   const options = ['-wkt_format', 'WKT1'];
   const input = await gdal!.open(fileOrFiles as File | FileList);

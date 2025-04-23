@@ -4,6 +4,7 @@ import type { Topology } from 'topojson-specification';
 
 import cleanFolder from './cleanFolder';
 import { gdal } from './init';
+import extractZipContent from './zip';
 
 /**
  * Options for the `toGeoJSON` function.
@@ -82,6 +83,13 @@ const toGeoJSON = async (
     fileOrFiles = new File([JSON.stringify(obj)], `${lName}.geojson`, {
       type: 'application/geo+json',
     });
+  } else if (
+    fileOrFiles instanceof File
+    && (fileOrFiles.type === 'application/zip'
+      || fileOrFiles.name.toLowerCase().endsWith('.zip'))
+  ) {
+    // Handle zipped shapefiles by unpacking them
+    fileOrFiles = await extractZipContent(fileOrFiles);
   }
 
   fileOrFiles = fileOrFiles as File | FileList;

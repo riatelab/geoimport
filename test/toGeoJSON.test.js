@@ -197,4 +197,46 @@ QUnit.module('toGeoJSON', (hooks) => {
       'Feature 2 has the correct coordinates',
     );
   });
+
+  QUnit.test('from zipped ESRI Shapefile', async (assert) => {
+    await loadLib();
+
+    // We first create zipped Shapefile from GeoJSON
+    const zippedShapefileBlob = await geoimport.fromGeoJSON(
+      fc1,
+      'layer',
+      'ESRI Shapefile',
+    );
+    assert.equal(
+      zippedShapefileBlob.type,
+      'application/zip',
+      'Resulting Blob has correct mime type',
+    );
+    const zippedShapefile = new File([zippedShapefileBlob], 'layer.zip', {
+      type: zippedShapefileBlob.type,
+    });
+
+    const res = await geoimport.toGeoJSON(zippedShapefile);
+
+    assert.equal(
+      res.type,
+      'FeatureCollection',
+      'Result is a FeatureCollection',
+    );
+    assert.equal(
+      res.features.length,
+      2,
+      'Result has the correct number of features',
+    );
+    assert.equal(
+      JSON.stringify(res.features[0].geometry.coordinates),
+      `[1,1]`,
+      'Feature 1 has the correct coordinates',
+    );
+    assert.equal(
+      JSON.stringify(res.features[1].geometry.coordinates),
+      `[5,5]`,
+      'Feature 2 has the correct coordinates',
+    );
+  });
 });
