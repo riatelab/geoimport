@@ -32,13 +32,13 @@
     "watch": "rollup -c -w",
     "test": "open test/index.html",
     "lint": "eslint . --ext .js,.ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "check": "tsc --noEmit"
   },
   "dependencies": {
     "@json2csv/plainjs": "^7.0.6",
     "gdal3.js": "^2.8.1",
     "jszip": "^3.10.1",
-    "source-map-support": "^0.5.21",
     "topojson-client": "^3.1.0",
     "topojson-server": "^3.0.1"
   },
@@ -64,6 +64,7 @@
   "keywords": [
     "geojson",
     "gis",
-    "gdal"
+    "gdal",
+    "conversion"
   ]
 }
