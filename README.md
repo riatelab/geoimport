@@ -10,8 +10,6 @@ interface for converting geospatial data to and from GeoJSON format.
 It is notably used in the [Magrit](https://github.com/riatelab/magrit) Web-application to handle
 the import/export of various file formats.
 
-## Installation
-
 ## Overview
 
 This library provides a simple interface to convert geospatial data to and from GeoJSON format.
@@ -32,7 +30,7 @@ Supported geospatial formats include:
 
 - GeoJSON
 - TopoJSON
-- ESRI Shapefile
+- ESRI Shapefile (and zipped Shapefile)
 - Geopackage
 - GML
 - KML
@@ -45,14 +43,50 @@ Supported tabular formats include:
 - ODS
 - XLSX
 
-## Usage
+## Installation and usage
 
 Importing and initializing `geoimport` may vary slightly depending on the context in which
-you use the library:
+you use the library.
+
+You can install the library using `npm` (or any equivalent package manager):
+
+```bash
+npm install geoimport
+```
+
+Or you can use it directly in your HTML file by including the following script tag:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/geoimport@latest/dist/geoimport.min.js"></script>
+```
+
+Then you can use the library in your JavaScript code:
 
 ```js
-import * as geoimport from 'geoimport';
+import { init, fromGeoJSON } from 'geoimport';
 
+init({
+  gdalPath: 'https://cdn.jsdelivr.net/npm/geoimport@latest/dist/static/',
+});
+
+// A geojson feature collection
+const geojson = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: [1, 1] },
+      properties: { foo: 42 },
+    },
+  ],
+};
+// Convert to KML, the result is a String
+const resultShp = fromGeoJSON(geojson, 'myLayer', 'KML');
+```
+
+Or if you imported the library using the script tag, you can use it like this:
+
+```js
 geoimport.init();
 
 // A geojson feature collection
@@ -79,28 +113,6 @@ const resultGpkg = geoimport.fromGeoJSON(
 
 // Convert back to geojson
 const resGeojson = geoimport.toGeoJSON(resultGpkg, { layerName: 'myLayer' });
-```
-
-```js
-import { init, fromGeoJSON } from 'geoimport';
-
-init({
-  gdalPath: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.8.1/dist/package/',
-});
-
-// A geojson feature collection
-const geojson = {
-  type: 'FeatureCollection',
-  features: [
-    {
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: [1, 1] },
-      properties: { foo: 42 },
-    },
-  ],
-};
-// Convert to KML, the result is a String
-const resultShp = fromGeoJSON(geojson, 'myLayer', 'KML');
 ```
 
 See also this [introduction Notebook on Observable](https://observablehq.com/@mthh/hello-geoimport).
