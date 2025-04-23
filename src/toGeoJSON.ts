@@ -20,7 +20,7 @@ type ToGeoJSONOptions = {
   // Whether writing bbox at the Feature and FeatureCollection level.
   // Default to false.
   writeBbox?: boolean;
-  // Whether to write NaN/Infinity values (note that some JSON parses don't
+  // Whether to write NaN/Infinity values (note that some JSON parsers don't
   // support these values since they are not strictly valid JSON).
   // Default to false.
   writeNonFiniteValues?: boolean;
