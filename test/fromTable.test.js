@@ -9,25 +9,25 @@ QUnit.module('fromTable', (hooks) => {
     await loadLib();
 
     const res = await geoimport.fromTable(table, 'ODS');
-    assert.equal(res.toString(), '[object Blob]', 'Result is a Blob');
+    assert.equal(res.toString(), '[object File]', 'Result is a File');
     assert.equal(
       res.type,
       'application/vnd.oasis.opendocument.spreadsheet',
-      'Resulting Blob has correct mime type',
+      'Resulting File has correct mime type',
     );
-    assert.equal(res.size, 2137, 'Resulting Blob has correct size');
+    assert.equal(res.size, 2137, 'Resulting File has correct size');
   });
 
   QUnit.test('to XLSX file', async (assert) => {
     await loadLib();
 
     const res = await geoimport.fromTable(table, 'XLSX');
-    assert.equal(res.toString(), '[object Blob]', 'Result is a Blob');
+    assert.equal(res.toString(), '[object File]', 'Result is a File');
     assert.equal(
       res.type,
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'Resulting Blob has correct mime type',
+      'Resulting File has correct mime type',
     );
-    assert.equal(res.size, 3291, 'Resulting Blob has correct size');
+    assert.equal(res.size, 3291, 'Resulting File has correct size');
   });
 });

@@ -27,40 +27,48 @@ QUnit.module('fromGeoJSON', (hooks) => {
     await loadLib();
     const res = await geoimport.fromGeoJSON(fc1, 'layer', 'ESRI Shapefile');
 
-    assert.equal(res.toString(), '[object Blob]', 'Result is a Blob');
+    assert.equal(res.toString(), '[object File]', 'Result is a File');
     assert.equal(
       res.type,
       'application/zip',
-      'Resulting Blob has correct mime type',
+      'Resulting File has correct mime type',
     );
-    assert.equal(res.size, 1142, 'Resulting Blob has correct size');
+    assert.equal(res.size, 1142, 'Resulting File has correct size');
   });
 
   QUnit.test('to GeoPackage', async (assert) => {
     await loadLib();
     const res = await geoimport.fromGeoJSON(fc1, 'layer', 'GPKG');
 
-    assert.equal(res.toString(), '[object Blob]', 'Result is a Blob');
+    assert.equal(res.toString(), '[object File]', 'Result is a File');
     assert.equal(
       res.type,
       'application/geopackage+sqlite3',
-      'Resulting Blob has correct mime type',
+      'Resulting File has correct mime type',
     );
-    assert.equal(res.size, 98304, 'Resulting Blob has correct size');
+    assert.equal(res.size, 98304, 'Resulting File has correct size');
   });
 
   QUnit.test('to GPX', async (assert) => {
     await loadLib();
     const res = await geoimport.fromGeoJSON(fc1, 'layer', 'GPX');
-    assert.equal(res, fc1_gpx);
+    assert.equal(res, fc1_gpx, 'Result is the expected GPX');
   });
 
   QUnit.test('to FlatGeobuf', async (assert) => {
     await loadLib();
     const res = await geoimport.fromGeoJSON(fc1, 'layer', 'FlatGeobuf');
 
-    assert.equal(res.toString(), '[object Blob]', 'Result is a Blob');
-    assert.equal(res.type, '', "Resulting Blob don't have a mime type");
-    assert.equal(res.size, 1344, 'Resulting Blob has correct size');
+    assert.equal(res.toString(), '[object File]', 'Result is a File');
+    assert.equal(res.type, '', "Resulting File don't have a mime type");
+    assert.equal(res.size, 1344, 'Resulting File has correct size');
+  });
+
+  QUnit.test('to unsupported format', async (assert) => {
+    await loadLib();
+    await assert.rejects(
+      geoimport.fromGeoJSON(fc1, 'layer', 'Parquet'),
+      'An error is thrown when the format is not supported',
+    );
   });
 });
