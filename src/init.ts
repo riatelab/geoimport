@@ -7,7 +7,16 @@ export let gdal: Gdal | null = null;
  */
 type InitGdalJsOptions = {
   // The path to the directory containing Gdal3.js files
-  gdalPath?: string;
+  path?: string;
+  // Paths to use if filenames differ from gdal3WebAssembly.(data|wasm) and gdal3.js.
+  paths?: {
+    // Wasm file path
+    wasm?: string;
+    // Data file path
+    data?: string;
+    // Gdal3.js file path
+    js?: string;
+  };
   // Whether to run gdal in a web worker
   useWorker?: boolean;
 };
@@ -15,21 +24,23 @@ type InitGdalJsOptions = {
 /**
  * This is a wrapper around initGdalJs function
  */
-const init = async (options: InitGdalJsOptions = {}): Promise<void> => {
-  if (!gdal) {
-    const path = options.gdalPath || 'static';
-    const useWorker = path.includes('cdn')
+const init = async (
+  options: InitGdalJsOptions = {},
+  forceReinitialisation: boolean = false,
+): Promise<void> => {
+  if (!gdal || forceReinitialisation) {
+    // const path = options.path || 'static';
+    const useWorker = (options.path || '').includes('cdn')
       ? false
       : typeof options.useWorker === 'boolean'
         ? options.useWorker
         : true;
-    gdal = await initGdalJs({
-      path,
-      useWorker,
-    });
-  } else {
-    // Gdal is already initialized
+    options.useWorker = useWorker;
+    gdal = await initGdalJs(options as never);
   }
+  // else {
+  //     Gdal is already initialized
+  // }
 };
 
 export default init;

@@ -66,7 +66,8 @@ Then you can use the library in your JavaScript code:
 import { init, fromGeoJSON } from 'geoimport';
 
 init({
-  gdalPath: 'https://cdn.jsdelivr.net/npm/geoimport@latest/dist/static/',
+  path: 'https://cdn.jsdelivr.net/npm/geoimport@latest/dist/static/',
+  useWorker: false,
 });
 
 // A geojson feature collection
@@ -84,10 +85,10 @@ const geojson = {
 const resultShp = fromGeoJSON(geojson, 'myLayer', 'KML');
 ```
 
-Or if you imported the library using the script tag, you can use it like this:
+Or if you imported the library using the script tag (and serving yourself the JS files) you can use it like this:
 
 ```js
-geoimport.init();
+geoimport.init({ path: 'static' });
 
 // A geojson feature collection
 const geojson = {
@@ -113,6 +114,24 @@ const resultGpkg = geoimport.fromGeoJSON(
 
 // Convert back to geojson
 const resGeojson = geoimport.toGeoJSON(resultGpkg, { layerName: 'myLayer' });
+```
+
+Or using [Vite](https://vitejs.dev/) for example:
+
+```js
+import { init } from 'geoimport';
+import workerUrl from 'geoimport/dist/static/gdal3.js?url';
+import dataUrl from 'geoimport/dist/static/gdal3WebAssembly.data?url';
+import wasmUrl from 'geoimport/dist/static/gdal3WebAssembly.wasm?url';
+
+init({
+  paths: {
+    wasm: wasmUrl,
+    data: dataUrl,
+    js: workerUrl,
+  },
+  useWorker: true,
+});
 ```
 
 See also this [introduction Notebook on Observable](https://observablehq.com/@mthh/hello-geoimport).

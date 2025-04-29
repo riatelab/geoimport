@@ -1,6 +1,6 @@
 const loadLib = async () => {
   await geoimport.init({
-    gdalPath: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.8.1/dist/package/',
+    path: 'https://cdn.jsdelivr.net/npm/gdal3.js@2.8.1/dist/package/',
   });
 };
 
