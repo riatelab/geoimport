@@ -18,14 +18,12 @@
   "type": "module",
   "main": "dist/index.min.js",
   "module": "dist/index.min.esm.js",
-  "exports": {
-    "import": "./dist/index.min.esm.js",
-    "require": "./dist/index.min.js",
-    "default": "./dist/index.min.js"
-  },
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist/**/*",
+    "dist/static/gdal3.js",
+    "dist/static/gdal3WebAssembly.wasm",
+    "dist/static/gdal3WebAssembly.data"
   ],
   "scripts": {
     "build": "rm -rf dist/ && rollup -c",
