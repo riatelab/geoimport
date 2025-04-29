@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0 (2025-04-29)
+
+- Fix the attempt to clean the input/output folders when Gdal is run in a web worker.
+
 ## 0.3.0 (2025-04-29)
 
 - Modify `exports` and `files` in `package.json` in an attempt to ease import and initialization
