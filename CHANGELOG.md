@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0 (2025-04-30)
+
+- Handle and report errors more gracefully.
+
 ## 0.4.0 (2025-04-29)
 
 - Fix the attempt to clean the input/output folders when Gdal is run in a web worker.
