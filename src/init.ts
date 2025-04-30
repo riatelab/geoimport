@@ -1,4 +1,5 @@
 import initGdalJs from 'gdal3.js';
+import { GdalError } from './error';
 
 export let gdal: Gdal | null = null;
 
@@ -36,6 +37,12 @@ const init = async (
         ? options.useWorker
         : true;
     options.useWorker = useWorker;
+    // @ts-expect-error errorHandler is a valid initGdalJs option
+    options.errorHandler = (message: string, type: string) => {
+      if (type === 'stderr') {
+        throw new GdalError(message);
+      }
+    };
     gdal = await initGdalJs(options as never);
   }
   // else {

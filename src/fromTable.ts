@@ -1,5 +1,6 @@
 import { Parser } from '@json2csv/plainjs';
 import cleanFolder from './cleanFolder';
+import { GeoImportError } from './error';
 import { gdal } from './init';
 import {
   type SupportedTabularFormat,
@@ -34,11 +35,19 @@ const fromTable = async (
   // Options for ogr2ogr
   const options = ['-f', format];
   // Actually convert the CSV to the requested format
-  const output = await gdal!.ogr2ogr(input.datasets[0], options);
-  const bytes = await gdal!.getFileBytes(output);
-  // Close the input file and clean the input and output folders
-  await gdal!.close(input as never);
-  cleanFolder(['/input', '/output']);
+  let bytes;
+  try {
+    const output = await gdal!.ogr2ogr(input.datasets[0], options);
+    bytes = await gdal!.getFileBytes(output);
+  } catch (e) {
+    throw new GeoImportError(
+      `Error while converting the input dataset to ${format}.\nError reported by gdal3.js: ${(e as Error).message}`,
+    );
+  } finally {
+    // Close the input file and clean the input and output folders
+    await gdal!.close(input as never);
+    cleanFolder(['/input', '/output']);
+  }
   // Mime type and extension for the output file
   const mimeType =
     format === 'ODS'

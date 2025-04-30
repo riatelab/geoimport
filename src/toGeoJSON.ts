@@ -3,6 +3,7 @@ import type { FeatureCollection } from 'geojson';
 import type { Topology } from 'topojson-specification';
 
 import cleanFolder from './cleanFolder';
+import { GeoImportError } from './error';
 import { gdal } from './init';
 import extractZipContent from './zip';
 
@@ -63,12 +64,12 @@ const toGeoJSON = async (
       names.length > 1
       && (!options.layerName || typeof options.layerName !== 'string')
     ) {
-      throw new Error(
+      throw new GeoImportError(
         `The provided TopoJSON Topology contains multiples layers (${names.join(', ')}) and no layer name was provided`,
       );
     }
     if (names.length > 1 && !names.includes(options.layerName as string)) {
-      throw new Error(
+      throw new GeoImportError(
         `The provided TopoJSON Topology does not contain layer name (${options.layerName}) but contains other layers (${names.join(', ')})`,
       );
     }
@@ -110,10 +111,21 @@ const toGeoJSON = async (
       `SELECT * FROM "${options.layerName}"`,
     );
   }
-  const output = await gdal!.ogr2ogr(input.datasets[0], opts);
-  const bytes = await gdal!.getFileBytes(output);
-  await gdal!.close(input as never);
-  cleanFolder(['/input', '/output']);
+  let bytes;
+  try {
+    const output = await gdal!.ogr2ogr(input.datasets[0], opts);
+    bytes = await gdal!.getFileBytes(output);
+  } catch (e) {
+    let message = `Error during the conversion to GeoJSON.\nError reported by gdal3.js: ${(e as Error).message}`;
+    if (fileOrFiles instanceof File && !options.layerName) {
+      message +=
+        'If the input dataset contains multiple layers, please provide the layer name.';
+    }
+    throw new GeoImportError(message);
+  } finally {
+    await gdal!.close(input as never);
+    cleanFolder(['/input', '/output']);
+  }
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const obj = JSON.parse(new TextDecoder().decode(bytes));
   if (
@@ -122,7 +134,9 @@ const toGeoJSON = async (
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     || obj.type !== 'FeatureCollection'
   ) {
-    throw new Error('An error occurred during the conversion to GeoJSON');
+    throw new GeoImportError(
+      'An error occurred during the conversion to GeoJSON: the result is empty or not a FeatureCollection',
+    );
   }
   return obj as FeatureCollection;
 };

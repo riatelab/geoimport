@@ -1,6 +1,7 @@
 import { Topology } from 'topojson-specification';
 import { FeatureCollection } from 'geojson';
 import cleanFolder from './cleanFolder';
+import { GeoImportError } from './error';
 import { gdal } from './init';
 import extractZipContent from './zip';
 
@@ -75,7 +76,7 @@ const info = async (
       type: 'application/json',
     });
   } else if (!('arrayBuffer' in fileOrFiles) && !Array.isArray(fileOrFiles)) {
-    throw new Error('Unexpected input dataset');
+    throw new GeoImportError('Unexpected input dataset');
   }
   // Handle zipped shapefiles by unpacking them
   if (
@@ -87,9 +88,18 @@ const info = async (
   }
   const options = ['-wkt_format', 'WKT1'];
   const input = await gdal!.open(fileOrFiles as File | FileList);
-  const result = await gdal!.ogrinfo(input.datasets[0], options);
-  await gdal!.close(input as never);
-  cleanFolder('/input');
+  let result;
+
+  try {
+    result = await gdal!.ogrinfo(input.datasets[0], options);
+  } catch (e) {
+    throw new GeoImportError(
+      `Error while getting info about the input dataset.\nError reported by gdal3.js: ${(e as Error).message}`,
+    );
+  } finally {
+    await gdal!.close(input as never);
+    cleanFolder('/input');
+  }
   return result as InfoResult;
 };
 

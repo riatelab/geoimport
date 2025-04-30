@@ -3,6 +3,7 @@ import { topology } from 'topojson-server';
 import type { FeatureCollection } from 'geojson';
 
 import cleanFolder from './cleanFolder';
+import { GeoImportError } from './error';
 import { gdal } from './init';
 import {
   type SupportedVectorFormat,
@@ -31,13 +32,13 @@ const fromGeoJSON = async (
 ): Promise<string | File> => {
   // Check the various parameters
   if (!supportedVectorFormats.includes(format)) {
-    throw new Error(`Unsupported format! ${format}`);
+    throw new GeoImportError(`Unsupported format! ${format}`);
   }
   if (
     (format === 'KML' || format === 'GPX' || format === 'TopoJSON')
     && crs !== 'EPSG:4326'
   ) {
-    throw new Error(`${format} format only supports EPSG:4326 CRS`);
+    throw new GeoImportError(`${format} format only supports EPSG:4326 CRS`);
   }
 
   // If the format is TopoJSON, we use the topology function,
@@ -55,14 +56,36 @@ const fromGeoJSON = async (
   const input = await gdal!.open(inputFile);
   // Set the options for the conversion
   const options = ['-f', format];
-
   if (format === 'ESRI Shapefile') {
     options.push('-t_srs', crs);
     options.push('-lco', 'ENCODING=UTF-8');
-    const output = await gdal!.ogr2ogr(input.datasets[0], options);
-    if (!output.all || !Array.isArray(output.all)) {
-      throw new Error('Error creating shapefile');
+  } else if (format === 'GPX') {
+    options.push('-dsco', 'GPX_USE_EXTENSIONS=YES');
+  } else if (format === 'GPKG' || format === 'FlatGeobuf' || format === 'GML') {
+    options.push('-t_srs', crs);
+  }
+
+  // Try to convert the GeoJSON to the requested format
+  let output;
+  try {
+    output = await gdal!.ogr2ogr(input.datasets[0], options);
+    if (!output.all || !Array.isArray(output.all) || output.all.length < 1) {
+      throw new GeoImportError(`Error creating ${format} file`);
     }
+  } catch (e) {
+    await gdal!.close(input as never);
+    cleanFolder(['/input', '/output']);
+    // @ts-expect-error No problem here
+    if (e.name && e.name === 'GeoImportError') {
+      throw e;
+    } else {
+      throw new GeoImportError(
+        `Error while converting the input dataset to ${format}.\nError reported by gdal3.js: ${(e as Error).message}`,
+      );
+    }
+  }
+
+  if (format === 'ESRI Shapefile') {
     // We will return a zip file (encoded in base 64) containing all the shapefile files
     const zip = new JSZip();
     // Add the other files
@@ -80,12 +103,8 @@ const fromGeoJSON = async (
     const blob = await zip.generateAsync({ type: 'blob' });
     return new File([blob], `${layerName}.zip`, { type: 'application/zip' });
   }
+
   if (format === 'GML' || format === 'KML' || format === 'GPX') {
-    if (format === 'GML') {
-      options.push('-t_srs', crs);
-    } else if (format === 'GPX') {
-      options.push('-dsco', 'GPX_USE_EXTENSIONS=YES');
-    }
     // For KML, GML and GPX, we only return a text file
     const output = await gdal!.ogr2ogr(input.datasets[0], options);
     const bytes = await gdal!.getFileBytes(output);
@@ -93,14 +112,14 @@ const fromGeoJSON = async (
     cleanFolder(['/input', '/output']);
     return new TextDecoder().decode(bytes);
   }
+
   if (format === 'GPKG' || format === 'FlatGeobuf') {
-    options.push('-t_srs', crs);
     // For GPKG and FlatGeobuf, we return the binary file, as blob
     const output = await gdal!.ogr2ogr(input.datasets[0], options);
     const bytes = await gdal!.getFileBytes(output);
     await gdal!.close(input as never);
     cleanFolder(['/input', '/output']);
-    // It look likes there is no standard mimeType for FlatGeobuf
+    // It looks like there is no standard mimeType for FlatGeobuf,
     // but maybe we should use
     // application/vnd.fgb or application/vnd.flatgeobuf
     const mimeType = format === 'GPKG' ? 'application/geopackage+sqlite3' : '';
@@ -108,7 +127,8 @@ const fromGeoJSON = async (
     const blob = new Blob([bytes], { type: mimeType });
     return new File([blob], `${layerName}.${extension}`, { type: blob.type });
   }
-  throw Error('Unsupported format!'); // This should never happen
+
+  throw new GeoImportError('Unsupported format!'); // This should never happen
 };
 
 export default fromGeoJSON;

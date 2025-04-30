@@ -1,8 +1,8 @@
 import fromGeoJSON from './fromGeoJSON';
 import fromTable from './fromTable';
+import info from './info';
+import init, { gdal as _gdal } from './init';
 import toTable from './toTable';
 import toGeoJSON from './toGeoJSON';
-import init from './init';
-import info from './info';
 
-export { info, init, fromGeoJSON, fromTable, toGeoJSON, toTable };
+export { info, init, fromGeoJSON, fromTable, toGeoJSON, toTable, _gdal };
