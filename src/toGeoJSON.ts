@@ -117,7 +117,15 @@ const toGeoJSON = async (
     bytes = await gdal!.getFileBytes(output);
   } catch (e) {
     let message = `Error during the conversion to GeoJSON.\nError reported by gdal3.js: ${(e as Error).message}`;
-    if (fileOrFiles instanceof File && !options.layerName) {
+    if (
+      (fileOrFiles instanceof File
+        || (fileOrFiles.constructor
+          && fileOrFiles.constructor.name
+          && (fileOrFiles.constructor.name === 'File'
+            // Handle the case where the input is a FileAttachment (e.g. in Observable platform)
+            || fileOrFiles.constructor.name === 'FileAttachment')))
+      && !options.layerName
+    ) {
       message +=
         'If the input dataset contains multiple layers, please provide the layer name.';
     }
