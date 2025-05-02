@@ -1,5 +1,7 @@
 import { GeoImportError } from './error';
-import toGeoJSON from './toGeoJSON';
+import { gdal } from './init';
+import cleanFolder from './cleanFolder';
+import type { FeatureCollection } from 'geojson';
 
 /**
  * Options for the `toTable` function.
@@ -8,6 +10,8 @@ type ToTableOptions = {
   // The name of the table to extract (mandatory if the dataset contains
   // multiple sheets).
   tableName?: string;
+  // Whether the sheet to transform has headers (default to true).
+  hasHeaders?: boolean;
 };
 
 /**
@@ -27,63 +31,57 @@ const toTable = async (
   file: File,
   options: ToTableOptions = {},
 ): Promise<Record<string, unknown>[]> => {
-  const opts = options.tableName ? { layerName: options.tableName } : {};
-  const layer = await toGeoJSON(file, opts);
+  const input = await gdal!.open(file);
+  const opts = ['-f', 'GeoJSON'];
+  if (options.tableName) {
+    opts.push(
+      '-nln',
+      `${options.tableName}`,
+      '-sql',
+      `SELECT * FROM "${options.tableName}"`,
+    );
+  }
+  if (options.hasHeaders === undefined || options.hasHeaders) {
+    opts.push('-oo', 'HEADERS=FORCE');
+  } else if (!options.hasHeaders) {
+    opts.push('-oo', 'HEADERS=DISABLE');
+  }
 
-  if (!layer || !('features' in layer) || layer.features.length < 1) {
+  let bytes;
+  try {
+    const output = await gdal!.ogr2ogr(input.datasets[0], opts);
+    bytes = await gdal!.getFileBytes(output);
+  } catch (e) {
+    let message = `Error during the conversion to table.\nError reported by gdal3.js: ${(e as Error).message}`;
+    message +=
+      'If the input dataset contains multiple layers, please provide the layer name.';
+    throw new GeoImportError(message);
+  } finally {
+    await gdal!.close(input as never);
+    cleanFolder(['/input', '/output']);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const obj = JSON.parse(new TextDecoder().decode(bytes));
+  if (
+    typeof obj !== 'object'
+    || !('type' in obj)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    || obj.type !== 'FeatureCollection'
+  ) {
+    throw new GeoImportError(
+      'An error occurred during the conversion to GeoJSON: the result is empty or not a FeatureCollection',
+    );
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (!obj || !('features' in obj) || obj.features.length < 1) {
     throw new GeoImportError('An error occurred or the table is empty');
   }
 
-  const columnsBefore = Object.keys(layer.features[0].properties!);
-  const columnsAfter = columnsBefore.slice();
+  const rows = (obj as FeatureCollection).features.map((f) => f.properties);
 
-  // We want to take care of the case where the column names are not correctly
-  // identified and became Field1, Field2, etc.
-  // In such cases, we need to take the first data row as the header row.
-  if (
-    JSON.stringify(columnsAfter)
-    === JSON.stringify(
-      Array.from({ length: columnsAfter.length }).map(
-        (d, i) => `Field${i + 1}`,
-      ),
-    )
-  ) {
-    const firstRow = layer.features[0].properties;
-    for (let i = 0; i < columnsBefore.length; i += 1) {
-      // @ts-expect-error abc
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      columnsAfter[i] = firstRow[columnsBefore[i]];
-    }
-
-    // We remove the first row from the data
-    layer.features.shift();
-
-    // We update the properties of the features
-    layer.features.forEach((f) => {
-      const properties = {};
-      for (let i = 0; i < columnsBefore.length; i += 1) {
-        // @ts-expect-error abc
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        properties[columnsAfter[i]] = f.properties[columnsBefore[i]];
-      }
-      f.properties = properties;
-    });
-  }
-
-  const rows = layer.features.map((f) => f.properties);
-
-  // Remove lines at the end of the file that only contain empty cells
-  let lastDataRowIndex = rows.length - 1;
-  while (
-    lastDataRowIndex >= 0
-    // @ts-expect-error abc
-    && columnsAfter.every((c) => rows[lastDataRowIndex][c] === undefined)
-  ) {
-    lastDataRowIndex -= 1;
-  }
-
-  // Return the cleaned dataset
-  return rows.slice(0, lastDataRowIndex + 1) as Record<string, unknown>[];
+  return rows as Record<string, unknown>[];
 };
 
 export default toTable;
