@@ -11,6 +11,7 @@ export default tseslint.config(
   globalIgnores([
     'node_modules/**',
     'dist/**',
+    'docs/**',
     'coverage/**',
     '*.config.js',
     '*.config.mjs',
