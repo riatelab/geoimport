@@ -14,7 +14,8 @@ import {
  * This is a wrapper around 'ogr2ogr'.
  *
  * @param {Record<string, unknown>[]} table - The data to convert.
- * @param {SupportedTabularFormat} format - The format to convert to.
+ * @param {SupportedTabularFormat} format - The format to convert to (among the following
+ * values: 'ODS' and 'XLSX').
  * @returns {Promise<File>} - The resulting File.
  * @throws {Error} - If the format is not supported or if there is an error while creating resulting file.
  */

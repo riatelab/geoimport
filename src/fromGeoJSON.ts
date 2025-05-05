@@ -17,7 +17,8 @@ import {
  *
  * @param {FeatureCollection} layer - The GeoJSON FeatureCollection to convert.
  * @param {string} layerName - The name of the layer to create.
- * @param {SupportedVectorFormat} format - The format to convert to.
+ * @param {SupportedVectorFormat} format - The format to convert to (among the following
+ * values: 'TopoJSON', 'ESRI Shapefile', 'KML', 'GML', 'GPKG', 'GPX' and 'FlatGeoBuf').
  * @param {string} [crs="EPSG:4326"] - The coordinate reference system to use for the output file
  * (can be a EPSG code, a PROJ string or a WKT string).
  * @returns {Promise<string | File>} The resulting layer, either as a String for textual formats

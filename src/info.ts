@@ -59,7 +59,7 @@ type InfoResult = {
  *
  * @param {Topology | FeatureCollection | File | FileList | File[]} fileOrFiles - The input
  * dataset.
- * @retuns {Promise<InfoResult>}
+ * @returns {Promise<InfoResult>}
  * @throws {Error} - If the format is not supported or if there is an error while
  * getting info about the input dataset.
  */
