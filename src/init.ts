@@ -37,12 +37,15 @@ const init = async (
         ? options.useWorker
         : true;
     options.useWorker = useWorker;
-    // @ts-expect-error errorHandler is a valid initGdalJs option
-    options.errorHandler = (message: string, type: string) => {
-      if (type === 'stderr') {
-        throw new GdalError(message);
-      }
-    };
+    if (!useWorker) {
+      // @ts-expect-error errorHandler is a valid initGdalJs option but
+      // it should only be used if useWorker is false
+      options.errorHandler = (message: string, type: string) => {
+        if (type === 'stderr') {
+          throw new GdalError(message);
+        }
+      };
+    }
     gdal = await initGdalJs(options as never);
   }
   // else {
