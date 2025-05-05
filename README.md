@@ -39,11 +39,11 @@ Supported geospatial formats include:
 
 Supported tabular formats include:
 
-- CSV/TSV
+- CSV
 - ODS
 - XLSX
 
-## Installation and usage
+## Installation
 
 Importing and initializing `geoimport` may vary slightly depending on the context in which
 you use the library.
@@ -60,35 +60,31 @@ Or you can use it directly in your HTML file by including the following script t
 <script src="https://cdn.jsdelivr.net/npm/geoimport@latest/dist/geoimport.min.js"></script>
 ```
 
-Then you can use the library in your JavaScript code:
+## Usage
+
+The first thing to do is to initialize the library. This is done by calling the `init` function to specify where
+to find the gdal3.js `data` and `wasm` files, and to specify whether to use a web worker or not.
+
+The `init` function takes an object with the following properties:
+- `path`: The path to the directory containing the gdal3.js files. This is required if the files aren't located in the
+  `./static` directory relative to the `geoimport` JavaScript or if you are using `geoimport` from a CDN.
+  If you prefer to specify each file individually, you can use the `paths` property instead (see below, this can
+  be useful if you are using a bundler like Vite).
+- `paths`: If you are not using the `path` property, an object with the following properties:
+  - `wasm`: The path to the gdal3.js `wasm` file.
+  - `data`: The path to the gdal3.js `data` file.
+  - `js`: The path to the gdal3.js `js` file.
+- `useWorker`: A boolean indicating whether to use a web worker or not. Default is `true` (but if the library detects
+  that the `path` is a CDN, it will set this to `false`
+  because the web worker won't be able to access the files on the CDN).
+
+### Example
+
+If you imported the library using the script tag (and serving yourself the JS files) you can use it like this,
+with the default settings:
 
 ```js
-import { init, fromGeoJSON } from 'geoimport';
-
-init({
-  path: 'https://cdn.jsdelivr.net/npm/geoimport@latest/dist/static/',
-  useWorker: false,
-});
-
-// A geojson feature collection
-const geojson = {
-  type: 'FeatureCollection',
-  features: [
-    {
-      type: 'Feature',
-      geometry: { type: 'Point', coordinates: [1, 1] },
-      properties: { foo: 42 },
-    },
-  ],
-};
-// Convert to KML, the result is a String
-const resultShp = fromGeoJSON(geojson, 'myLayer', 'KML');
-```
-
-Or if you imported the library using the script tag (and serving yourself the JS files) you can use it like this:
-
-```js
-geoimport.init({ path: 'static' });
+geoimport.init();
 
 // A geojson feature collection
 const geojson = {
@@ -116,10 +112,21 @@ const resultGpkg = geoimport.fromGeoJSON(
 const resGeojson = geoimport.toGeoJSON(resultGpkg, { layerName: 'myLayer' });
 ```
 
-Or using [Vite](https://vitejs.dev/) for example:
+Or if you imported the library from a CDN using the script tag:
 
 ```js
-import { init } from 'geoimport';
+geoimport.init({
+  path: 'https://cdn.jsdelivr.net/npm/geoimport@latest/dist/static/',
+  useWorker: false,
+});
+
+```
+
+If you installed the library using `npm` (or another similar package manager) and you are using a bundler like Vite,
+you can use it like the following  and Vite will take care of bundling the files for you:
+
+```js
+import { init, toGeoJSON, fromGeoJSON } from 'geoimport';
 import workerUrl from 'geoimport/dist/static/gdal3.js?url';
 import dataUrl from 'geoimport/dist/static/gdal3WebAssembly.data?url';
 import wasmUrl from 'geoimport/dist/static/gdal3WebAssembly.wasm?url';
@@ -168,7 +175,7 @@ and [semantic versioning](https://semver.org/).
 Since this library is mostly targeting browser environments, the test suite uses [QUnit](https://qunitjs.com/) and runs in the browser.
 
 Run the tests by running `npm run test`, this will open your default browser and run the tests (and since the tests are executed on the built file,
-don't forget to, run `npm run build` after making any change in the code and before running the tests).
+don't forget to run `npm run build` after making any change in the code and before running/reloading the tests).
 
 ## License
 
