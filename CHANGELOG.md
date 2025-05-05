@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.7.0 (2025-05-05)
+
+- Fix error when initializing the library with `useWorker: true` (introduced in 0.5.0 when improving error handling).
+
 ## 0.6.0 (2025-05-05)
 
 - Improve conversion of XLSX/ODS files to table (by allowing to choose if the first row should be used as header or not).

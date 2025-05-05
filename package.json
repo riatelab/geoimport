@@ -1,6 +1,6 @@
 {
   "name": "geoimport",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Easily convert your geospatial data to/from GeoJSON for Web-based applications.",
   "homepage": "https://github.com/riatelab/geoimport#readme",
   "repository": {
