@@ -11,19 +11,27 @@ import extractZipContent from './zip';
  * Options for the `toGeoJSON` function.
  */
 type ToGeoJSONOptions = {
-  // The name of the layer to extract (only for formats that can contain multiple layers
-  // such as GeoPackage or TopoJSON). If the input dataset contains multiples layers
-  // and this option is not provided, an error is returned).
+  /**
+   * The name of the layer to extract (only for formats that can contain multiple layers
+   * such as GeoPackage or TopoJSON). If the input dataset contains multiples layers
+   * and this option is not provided, an error is returned by the `toGeoJSON` function.
+   */
   layerName?: string;
-  // Whether the returned GeoJSON must be RFC7946 compliant.
-  // Default to true.
+  /**
+   * Whether the returned GeoJSON must be RFC7946 compliant.
+   * Default to true.
+   */
   rfc7946?: boolean;
-  // Whether writing bbox at the Feature and FeatureCollection level.
-  // Default to false.
+  /**
+   * Whether writing bbox at the Feature and FeatureCollection level.
+   * Default to false.
+   */
   writeBbox?: boolean;
-  // Whether to write NaN/Infinity values (note that some JSON parsers don't
-  // support these values since they are not strictly valid JSON).
-  // Default to false.
+  /**
+   * Whether to write NaN/Infinity values (note that some JSON parsers don't
+   * support these values since they are not strictly valid JSON).
+   * Default to false.
+   */
   writeNonFiniteValues?: boolean;
 };
 

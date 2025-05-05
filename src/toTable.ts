@@ -7,11 +7,18 @@ import type { FeatureCollection } from 'geojson';
  * Options for the `toTable` function.
  */
 type ToTableOptions = {
-  // The name of the table to extract (mandatory if the dataset contains
-  // multiple sheets).
-  tableName?: string;
-  // Whether the sheet to transform has headers (default to true).
+  /**
+   * Whether the sheet to transform has headers. If true, the first line
+   * is read as headers. If false, the first line is read as data (and the
+   * column names are generated automatically as "Field1", "Field2", etc.).
+   * Default to true.
+   */
   hasHeaders?: boolean;
+  /**
+   * The name of the table to extract (mandatory if the dataset contains
+   * multiple sheets).
+   */
+  tableName?: string;
 };
 
 /**
