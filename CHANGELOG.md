@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0 (2025-05-05)
+
+- Improve conversion of XLSX/ODS files to table (by allowing to choose if the first row should be used as header or not).
+
 ## 0.5.0 (2025-04-30)
 
 - Handle and report errors more gracefully.
