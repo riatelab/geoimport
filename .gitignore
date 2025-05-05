@@ -137,3 +137,6 @@ dist
 
 # JetBrains IDEs
 .idea/
+
+# Built documentation
+docs/
