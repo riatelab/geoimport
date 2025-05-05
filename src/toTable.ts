@@ -31,7 +31,15 @@ const toTable = async (
   file: File,
   options: ToTableOptions = {},
 ): Promise<Record<string, unknown>[]> => {
-  const input = await gdal!.open(file);
+  const openOpts = [];
+  if (options.hasHeaders === undefined || options.hasHeaders) {
+    openOpts.push('-oo', 'HEADERS=FORCE');
+  } else if (!options.hasHeaders) {
+    openOpts.push('-oo', 'HEADERS=DISABLE');
+  }
+
+  const input = await gdal!.open(file, openOpts);
+
   const opts = ['-f', 'GeoJSON'];
   if (options.tableName) {
     opts.push(
@@ -40,11 +48,6 @@ const toTable = async (
       '-sql',
       `SELECT * FROM "${options.tableName}"`,
     );
-  }
-  if (options.hasHeaders === undefined || options.hasHeaders) {
-    opts.push('-oo', 'HEADERS=FORCE');
-  } else if (!options.hasHeaders) {
-    opts.push('-oo', 'HEADERS=DISABLE');
   }
 
   let bytes;
@@ -79,9 +82,23 @@ const toTable = async (
     throw new GeoImportError('An error occurred or the table is empty');
   }
 
-  const rows = (obj as FeatureCollection).features.map((f) => f.properties);
+  // Extract the rows and columns from the FeatureCollection
+  const rows = (obj as FeatureCollection).features.map(
+    (f) => f.properties,
+  ) as Record<string, unknown>[];
+  const columns = Object.keys(rows[0]);
 
-  return rows as Record<string, unknown>[];
+  // Remove lines at the end of the file that only contain empty cells
+  // (this happens with some XLSX files)
+  let lastDataRowIndex = rows.length - 1;
+  while (
+    lastDataRowIndex >= 0
+    && columns.every((c) => rows[lastDataRowIndex][c] === undefined)
+  ) {
+    lastDataRowIndex -= 1;
+  }
+
+  return rows.slice(0, lastDataRowIndex + 1);
 };
 
 export default toTable;
