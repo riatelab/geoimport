@@ -28,7 +28,8 @@
   "scripts": {
     "build": "rm -rf dist/ && rollup -c",
     "watch": "rollup -c -w",
-    "test": "open test/index.html",
+    "test": "http-server . -p 8989 & open http://localhost:8989/test/index.html",
+    "test:stop": "pkill -f 'http-server . -p 8989'",
     "lint": "eslint . --ext .js,.ts",
     "format": "prettier --write .",
     "check": "tsc --noEmit",
@@ -52,6 +53,7 @@
     "@types/topojson-specification": "^1.0.5",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.1",
+    "http-server": "^14.1.1",
     "prettier": "^3.5.3",
     "qunit": "^2.24.1",
     "rollup": "^4.40.1",
