@@ -6,7 +6,7 @@
 
 ## 0.6.0 (2025-05-05)
 
-- Improve conversion of XLSX/ODS files to table (by allowing to choose if the first row should be used as header or not).
+- Improve conversion of XLSX/ODS files to table (by allowing to choose if the first line should be used as header or not).
 
 ## 0.5.0 (2025-04-30)
 
