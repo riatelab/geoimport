@@ -2,7 +2,7 @@
 
 <a href="https://www.npmjs.com/package/geoimport"><img src="https://img.shields.io/npm/v/geoimport" /></a>
 
-Easily convert your geospatial data to/from GeoJSON for Web-based applications.
+Easily convert your geospatial data to/from GeoJSON for browser-based applications.
 
 ## Description
 
